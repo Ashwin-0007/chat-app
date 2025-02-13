@@ -1,14 +1,15 @@
-import './App.css'
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import './App.css';
+import Login from "./component/login";
 
 function App() {
-
   return (
-    <>
-      <div>
-        <h1 className="font-bold text-purple-600">This is a Chat Application</h1>
-      </div>
-    </>
-  )
+    <Router>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;
