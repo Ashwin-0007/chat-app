@@ -1,40 +1,44 @@
 'use strict';
-const {Model, Sequelize} = require('sequelize');
+const {Sequelize, DataTypes} = require('sequelize');
 const sequelize = require('../../config/database');
 
-module.exports = sequelize.define('User', {
+ const User = sequelize.define('User', {
   id: {
     allowNull: false,
     autoIncrement: true,
     primaryKey: true,
-    type: Sequelize.INTEGER
+    type: DataTypes.INTEGER
   },
   firstName: {
-    type: Sequelize.STRING
+    type: DataTypes.STRING,
+    allowNull: false,
   },
   lastName: {
-    type: Sequelize.STRING
+    type: DataTypes.STRING,
+    allowNull: false,
   },
   email: {
-    type: Sequelize.STRING,
-    unique: true
-  },
-  password: {
-    type: Sequelize.STRING
+    type: DataTypes.STRING,
+    unique: true,
+    allowNull: false,
   },
   createdAt: {
     allowNull: false,
-    type: Sequelize.DATE
+    type: DataTypes.DATE
   },
   updatedAt: {
     allowNull: false,
-    type: Sequelize.DATE
+    type: DataTypes.DATE
   },
   deletedAt:{
-    type: Sequelize.DATE
+    type: DataTypes.DATE,
+    allowNull: true,
   }
 },{
   paranoid: true,
-  freezeTable: true,
+  timestamps: true,
+  freezeTableName: true,
   modelName: 'User',
 })
+
+module.exports = User;

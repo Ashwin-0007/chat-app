@@ -20,6 +20,9 @@ const globalErrorHandler = (err, req, res, next) => {
     if(err.name === 'SequelizeValidationError'){
         err = new AppError(err.errors[0].message, 400);
     }
+    if(err.name === 'SequelizeDatabaseError'){
+        err = new AppError(err.errors[0].message, 400);
+    }
     if(err.name === 'SequelizeUniqueConstraintError'){
         err = new AppError(err.errors[0].message, 400);
     }
