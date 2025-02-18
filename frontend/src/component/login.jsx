@@ -1,9 +1,19 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const [userToken, setUserToken] = useState("");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if(userToken) {
+      navigate('/')
+    }
+  },[userToken])
+
   const handleLoginSuccess = async (credentialResponse) => {
     try {
       console.log("Google Login Success:", credentialResponse);
@@ -13,11 +23,11 @@ const Login = () => {
       console.log("Decoded Token:", decodedToken);
 
       // Send the token to the backend
-      const response = await axios.post('http://localhost:8000/api/v1/auth/login', {
+      const response = await axios.post('http://localhost:8000/api/v1/auth/google-login', {
         token: credentialResponse.credential,
       });
-
-      alert("Login successful!");
+      console.log("=======>>>>>>>>>", response)
+      setUserToken(response.data.userToken)
     } catch (error) {
       console.error("Error:", error);
       alert("Login failed. Please try again.");
@@ -27,6 +37,25 @@ const Login = () => {
   const handleLoginError = () => {
     console.log("Google Login Failed");
     alert("Google login failed. Please try again.");
+  };
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    const formData = {
+      email: e.target.email.value,
+      password: e.target.password.value,
+    };
+    try {
+      // Send form data to the backend for registration
+      const response = await axios.post(
+        "http://localhost:8000/api/v1/auth/login",
+        formData
+      )
+      setUserToken(response.data.token)
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Login failed. Please try again.");
+    }
   };
 
   return (
@@ -39,7 +68,7 @@ const Login = () => {
           <p className="mt-2 text-gray-600">Sign in to continue your journey</p>
         </div>
 
-        <form className="space-y-4">
+        <form className="space-y-4" onSubmit={handleFormSubmit}>
           <div>
             <label htmlFor="email" className="block font-medium text-gray-700 text-xl text-left">
               Email
@@ -90,7 +119,7 @@ const Login = () => {
 
         <div className="text-center text-sm text-gray-600">
           Don't have an account?{" "}
-          <a href="#" className="font-semibold text-purple-600 hover:text-purple-800">
+          <a href="/signup" className="font-semibold text-purple-600 hover:text-purple-800">
             Sign up
           </a>
         </div>

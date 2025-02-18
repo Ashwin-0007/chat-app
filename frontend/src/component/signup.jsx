@@ -1,9 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
+  const [userToken, setUserToken] = useState("");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+      if(userToken) {
+        navigate('/')
+      }
+    },[userToken])
+
   const handleLoginSuccess = async (credentialResponse) => {
     try {
       console.log("Google Login Success:", credentialResponse);
@@ -14,13 +24,12 @@ const Signup = () => {
 
       // Send the token to the backend
       const response = await axios.post(
-        "http://localhost:8000/api/v1/auth/login",
+        "http://localhost:8000/api/v1/auth/google-login",
         {
           token: credentialResponse.credential,
         }
       );
-
-      alert("Login successful!");
+      setUserToken(response.data.userToken);
     } catch (error) {
       console.error("Error:", error);
       alert("Login failed. Please try again.");
@@ -41,14 +50,13 @@ const Signup = () => {
       email: e.target.email.value,
       password: e.target.password.value,
     };
-    console.log("======>>>", formData)
     try {
       // Send form data to the backend for registration
       const response = await axios.post(
         "http://localhost:8000/api/v1/auth/signup",
         formData
       );
-      alert("Signup successful!");
+      setUserToken(response.data.token);
     } catch (error) {
       console.error("Error:", error);
       alert("Signup failed. Please try again.");

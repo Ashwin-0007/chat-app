@@ -21,6 +21,20 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      password: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      googleId: {
+        type: Sequelize.STRING,
+        allowNull: true,
+        unique: true,
+      },
+      provider: {
+        type: Sequelize.ENUM('local', 'google'),
+        allowNull: false,
+        defaultValue: 'local',
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
